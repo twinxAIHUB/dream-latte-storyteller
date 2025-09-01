@@ -235,6 +235,7 @@ const ParticipantsList = () => {
                                   alt="Payment verification"
                                   className="max-w-full h-auto rounded border"
                                   onError={(e) => {
+                                    console.error('Image load error:', e);
                                     e.currentTarget.style.display = 'none';
                                     e.currentTarget.nextElementSibling!.style.display = 'block';
                                   }}
@@ -242,6 +243,14 @@ const ParticipantsList = () => {
                                 <div className="hidden text-center py-8 text-muted-foreground">
                                   <p>Image could not be loaded</p>
                                   <p className="text-sm">URL: {participant.payment_screenshot_url}</p>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="mt-2"
+                                    onClick={() => window.open(participant.payment_screenshot_url, '_blank')}
+                                  >
+                                    Try Opening in New Tab
+                                  </Button>
                                 </div>
                               </div>
                             </div>

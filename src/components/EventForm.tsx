@@ -83,7 +83,10 @@ const EventForm = () => {
           // Use the correct bucket name from Supabase dashboard
           const { data: uploadData, error: uploadError } = await supabase.storage
             .from('payment-screenshots')
-            .upload(fileName, data.paymentScreenshot);
+            .upload(fileName, data.paymentScreenshot, {
+              cacheControl: '3600',
+              upsert: false
+            });
           
           if (uploadError) {
             throw new Error(`Upload failed: ${uploadError.message}`);
@@ -95,6 +98,8 @@ const EventForm = () => {
             .getPublicUrl(fileName);
           
           paymentScreenshotUrl = urlData.publicUrl;
+          
+          console.log('File uploaded successfully:', urlData.publicUrl);
         } catch (uploadError) {
           console.error('File upload error:', uploadError);
           toast({
