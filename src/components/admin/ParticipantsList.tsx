@@ -109,6 +109,25 @@ const ParticipantsList = () => {
     try {
       console.log('Attempting to delete participant:', participantId, participantName);
       
+      // First, let's check if the record exists
+      const { data: checkData, error: checkError } = await supabase
+        .from('coffee_tasting_registrations')
+        .select('id, name')
+        .eq('id', participantId)
+        .single();
+
+      console.log('Record check:', { checkData, checkError });
+
+      if (checkError) {
+        console.error('Error checking record:', checkError);
+        throw new Error(`Record not found or access denied: ${checkError.message}`);
+      }
+
+      if (!checkData) {
+        throw new Error('Record not found');
+      }
+      
+      // Now attempt to delete
       const { data, error } = await supabase
         .from('coffee_tasting_registrations')
         .delete()
@@ -131,7 +150,7 @@ const ParticipantsList = () => {
         // Refresh the list
         fetchParticipants();
       } else {
-        throw new Error('No records were deleted');
+        throw new Error('No records were deleted - this might be a permissions issue');
       }
     } catch (error) {
       console.error('Error deleting participant:', error);
