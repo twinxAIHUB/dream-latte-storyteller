@@ -22,6 +22,7 @@ const ParticipantsList = () => {
   const { toast } = useToast();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchParticipants();
@@ -103,28 +104,44 @@ const ParticipantsList = () => {
       return;
     }
 
+    setDeletingId(participantId);
+
     try {
-      const { error } = await supabase
+      console.log('Attempting to delete participant:', participantId, participantName);
+      
+      const { data, error } = await supabase
         .from('coffee_tasting_registrations')
         .delete()
-        .eq('id', participantId);
+        .eq('id', participantId)
+        .select();
 
-      if (error) throw error;
+      console.log('Delete response:', { data, error });
 
-      toast({
-        title: "Participant Deleted",
-        description: `${participantName}'s registration has been removed successfully.`,
-      });
+      if (error) {
+        console.error('Supabase delete error:', error);
+        throw new Error(`Delete failed: ${error.message}`);
+      }
 
-      // Refresh the list
-      fetchParticipants();
+      if (data && data.length > 0) {
+        toast({
+          title: "Participant Deleted",
+          description: `${participantName}'s registration has been removed successfully.`,
+        });
+        
+        // Refresh the list
+        fetchParticipants();
+      } else {
+        throw new Error('No records were deleted');
+      }
     } catch (error) {
       console.error('Error deleting participant:', error);
       toast({
         title: "Delete Failed",
-        description: "Failed to delete participant. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to delete participant. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -270,9 +287,14 @@ const ParticipantsList = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => deleteParticipant(participant.id, participant.name)}
+                        disabled={deletingId === participant.id}
                         className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        {deletingId === participant.id ? (
+                          <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
                       </Button>
                     </TableCell>
                   </TableRow>
