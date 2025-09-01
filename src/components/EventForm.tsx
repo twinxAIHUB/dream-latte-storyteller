@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Coffee, Calendar, Clock, Users } from "lucide-react";
+import { Upload, Coffee, Calendar, Clock, Users, QrCode } from "lucide-react";
+import qrCodeImage from "@/assets/qr.png";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -218,45 +219,78 @@ const EventForm = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="paymentScreenshot"
-                  render={() => (
-                    <FormItem>
-                      <FormLabel>Payment Screenshot (50% Down Payment) *</FormLabel>
-                      <FormControl>
-                        <div className="border-2 border-dashed border-coffee/30 rounded-lg p-8 text-center hover:border-coffee/50 transition-all duration-300 hover:bg-coffee/5">
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="hidden"
-                            id="payment-upload"
-                          />
-                          <label htmlFor="payment-upload" className="cursor-pointer">
-                            <Upload className="w-8 h-8 text-coffee mx-auto mb-2" />
-                            <p className="text-sm text-muted-foreground mb-1">
-                              Upload payment screenshot (₱500.00)
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              JPG, PNG up to 5MB
-                            </p>
-                          </label>
-                          {previewUrl && (
-                            <div className="mt-4">
-                              <img
-                                src={previewUrl}
-                                alt="Payment screenshot"
-                                className="max-w-full h-32 object-cover mx-auto rounded"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Payment Section */}
+                <div className="space-y-4">
+                  <FormLabel className="text-lg font-semibold text-coffee">Payment Instructions (50% Down Payment)</FormLabel>
+                  
+                  {/* QR Code Section */}
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 border-2 border-blue-200">
+                    <div className="text-center mb-4">
+                      <QrCode className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                      <h3 className="text-lg font-bold text-blue-800 mb-2">GCash Payment</h3>
+                      <p className="text-sm text-blue-700 mb-4">
+                        Scan the QR code below to pay ₱500.00 via GCash
+                      </p>
+                    </div>
+                    
+                    <div className="flex justify-center mb-4">
+                      <div className="bg-white p-4 rounded-lg shadow-lg">
+                        <img
+                          src={qrCodeImage}
+                          alt="GCash QR Code"
+                          className="w-48 h-48 object-contain"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="text-center text-sm text-blue-700 space-y-1">
+                      <p><strong>Recipient:</strong> JO*B CH********R J.</p>
+                      <p><strong>Amount:</strong> ₱500.00</p>
+                      <p><strong>Transfer fees may apply</strong></p>
+                    </div>
+                  </div>
+                  
+                  {/* Upload Section */}
+                  <FormField
+                    control={form.control}
+                    name="paymentScreenshot"
+                    render={() => (
+                      <FormItem>
+                        <FormLabel>Upload Payment Screenshot *</FormLabel>
+                        <FormControl>
+                          <div className="border-2 border-dashed border-coffee/30 rounded-lg p-8 text-center hover:border-coffee/50 transition-all duration-300 hover:bg-coffee/5">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleFileChange}
+                              className="hidden"
+                              id="payment-upload"
+                            />
+                            <label htmlFor="payment-upload" className="cursor-pointer">
+                              <Upload className="w-8 h-8 text-coffee mx-auto mb-2" />
+                              <p className="text-sm text-muted-foreground mb-1">
+                                Upload your payment screenshot
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                JPG, PNG up to 5MB
+                              </p>
+                            </label>
+                            {previewUrl && (
+                              <div className="mt-4">
+                                <img
+                                  src={previewUrl}
+                                  alt="Payment screenshot"
+                                  className="max-w-full h-32 object-cover mx-auto rounded"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <Button 
                   type="submit" 
