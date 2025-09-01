@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Coffee, Calendar, Clock, Users, DollarSign } from "lucide-react";
+import { Upload, Coffee, Calendar, Clock, Users } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -122,7 +122,7 @@ const EventForm = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <DollarSign className="w-5 h-5 text-coffee" />
+                <span className="w-5 h-5 text-coffee text-lg font-bold flex items-center justify-center">₱</span>
                 <div>
                   <p className="font-semibold">Price</p>
                   <p className="text-muted-foreground">₱1,000 per person</p>
@@ -260,7 +260,7 @@ const EventForm = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-coffee hover:opacity-90 text-white py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full bg-gradient-coffee hover:opacity-90 text-coffee-dark py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Submitting..." : "Register for Coffee Tasting Session"}

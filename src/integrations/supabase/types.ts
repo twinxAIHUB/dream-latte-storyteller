@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      coffee_tasting_registrations: {
+        Row: {
+          created_at: string
+          email: string
+          experience: string
+          id: string
+          name: string
+          payment_screenshot_url: string | null
+          phone: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          experience: string
+          id?: string
+          name: string
+          payment_screenshot_url?: string | null
+          phone: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          experience?: string
+          id?: string
+          name?: string
+          payment_screenshot_url?: string | null
+          phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       organizations: {
         Row: {
           created_at: string
