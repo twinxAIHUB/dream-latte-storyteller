@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      coffee_tasting_config: {
+        Row: {
+          additional_info: string | null
+          description: string
+          down_payment_percentage: number
+          end_time: string
+          event_date: string
+          featured_coffees: string | null
+          id: string
+          is_active: boolean
+          max_participants: number
+          min_participants: number
+          price_per_person: number
+          start_time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          additional_info?: string | null
+          description?: string
+          down_payment_percentage?: number
+          end_time?: string
+          event_date?: string
+          featured_coffees?: string | null
+          id?: string
+          is_active?: boolean
+          max_participants?: number
+          min_participants?: number
+          price_per_person?: number
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          additional_info?: string | null
+          description?: string
+          down_payment_percentage?: number
+          end_time?: string
+          event_date?: string
+          featured_coffees?: string | null
+          id?: string
+          is_active?: boolean
+          max_participants?: number
+          min_participants?: number
+          price_per_person?: number
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       coffee_tasting_registrations: {
         Row: {
           created_at: string
@@ -44,6 +95,33 @@ export type Database = {
           payment_screenshot_url?: string | null
           phone?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          rating: number | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          rating?: number | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          rating?: number | null
         }
         Relationships: []
       }
@@ -252,6 +330,66 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      terms_agreements: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_active: boolean
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          title: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      website_visitors: {
+        Row: {
+          id: string
+          ip_address: string | null
+          page_visited: string
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          visit_timestamp: string
+        }
+        Insert: {
+          id?: string
+          ip_address?: string | null
+          page_visited: string
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          visit_timestamp?: string
+        }
+        Update: {
+          id?: string
+          ip_address?: string | null
+          page_visited?: string
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          visit_timestamp?: string
+        }
+        Relationships: []
       }
     }
     Views: {
