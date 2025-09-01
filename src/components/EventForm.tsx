@@ -74,12 +74,36 @@ const EventForm = () => {
     try {
       let paymentScreenshotUrl = null;
       
-      // Temporarily disable file upload until bucket is properly configured
-      // TODO: Set up storage bucket and enable file uploads
-      console.log('File upload disabled - bucket configuration required');
-      
-      // For now, just store a placeholder or skip file upload
-      paymentScreenshotUrl = null;
+      // Upload payment screenshot to Supabase storage if file exists
+      if (data.paymentScreenshot) {
+        try {
+          const fileExt = data.paymentScreenshot.name.split('.').pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          
+          // Try with a more standard bucket name
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('lovable-uploads')
+            .upload(`payment-screenshots/${fileName}`, data.paymentScreenshot);
+          
+          if (uploadError) {
+            throw new Error(`Upload failed: ${uploadError.message}`);
+          }
+          
+          // Get the public URL for the uploaded file
+          const { data: urlData } = supabase.storage
+            .from('lovable-uploads')
+            .getPublicUrl(`payment-screenshots/${fileName}`);
+          
+          paymentScreenshotUrl = urlData.publicUrl;
+        } catch (uploadError) {
+          console.error('File upload error:', uploadError);
+          toast({
+            title: "File Upload Failed",
+            description: "Registration will continue without file upload.",
+            variant: "destructive",
+          });
+        }
+      }
       
       // Insert registration data into Supabase
       const { data: registrationData, error: insertError } = await supabase

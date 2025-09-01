@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Mail, Phone, Star, Download, RefreshCw } from "lucide-react";
+import { Users, Mail, Phone, Star, Download, RefreshCw, Trash2 } from "lucide-react";
 
 interface Participant {
   id: string;
@@ -97,6 +97,36 @@ const ParticipantsList = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const deleteParticipant = async (participantId: string, participantName: string) => {
+    if (!confirm(`Are you sure you want to delete ${participantName}'s registration? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('coffee_tasting_registrations')
+        .delete()
+        .eq('id', participantId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Participant Deleted",
+        description: `${participantName}'s registration has been removed successfully.`,
+      });
+
+      // Refresh the list
+      fetchParticipants();
+    } catch (error) {
+      console.error('Error deleting participant:', error);
+      toast({
+        title: "Delete Failed",
+        description: "Failed to delete participant. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Card className="bg-white/60 backdrop-blur-sm border-coffee/20">
       <CardHeader>
@@ -153,6 +183,7 @@ const ParticipantsList = () => {
                   <TableHead>Experience</TableHead>
                   <TableHead>Payment</TableHead>
                   <TableHead>Registration Date</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -187,6 +218,16 @@ const ParticipantsList = () => {
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {formatDate(participant.created_at)}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => deleteParticipant(participant.id, participant.name)}
+                        className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
