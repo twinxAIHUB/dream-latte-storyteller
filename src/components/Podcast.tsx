@@ -124,19 +124,19 @@ const Podcast = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Button 
                 variant="outline"
-                className="border-warm-cream text-warm-cream hover:bg-warm-cream hover:text-coffee-brown"
+                className="border-warm-cream text-coffee-brown bg-white hover:bg-warm-cream hover:text-coffee-brown"
               >
                 Spotify
               </Button>
               <Button 
                 variant="outline"
-                className="border-warm-cream text-warm-cream hover:bg-warm-cream hover:text-coffee-brown"
+                className="border-warm-cream text-coffee-brown bg-white hover:bg-warm-cream hover:text-coffee-brown"
               >
                 Apple Podcasts
               </Button>
               <Button 
                 variant="outline"
-                className="border-warm-cream text-warm-cream hover:bg-warm-cream hover:text-coffee-brown"
+                className="border-warm-cream text-coffee-brown bg-white hover:bg-warm-cream hover:text-coffee-brown"
               >
                 Google Podcasts
               </Button>

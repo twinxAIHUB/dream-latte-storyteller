@@ -35,7 +35,7 @@ const Hero = () => {
           <Button 
             size="lg" 
             variant="outline"
-            className="border-2 border-white text-white hover:bg-white hover:text-coffee-brown transition-all duration-300 px-8 py-3 text-lg font-medium"
+            className="border-2 border-white text-coffee-brown bg-white hover:bg-warm-cream hover:border-warm-cream transition-all duration-300 px-8 py-3 text-lg font-medium"
           >
             Visit Us Today
           </Button>
