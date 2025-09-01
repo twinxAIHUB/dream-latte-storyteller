@@ -3,9 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Mail, Phone, Star, Download, RefreshCw, Trash2 } from "lucide-react";
+import { Users, Mail, Phone, Star, Download, RefreshCw, Trash2, Eye } from "lucide-react";
 
 interface Participant {
   id: string;
@@ -207,9 +208,45 @@ const ParticipantsList = () => {
                     </TableCell>
                     <TableCell>
                       {participant.payment_screenshot_url ? (
-                        <Badge variant="default" className="bg-green-100 text-green-800">
-                          Paid
-                        </Badge>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Badge 
+                              variant="default" 
+                              className="bg-green-100 text-green-800 cursor-pointer hover:bg-green-200 transition-colors"
+                            >
+                              <Eye className="w-3 h-3 mr-1" />
+                              Paid
+                            </Badge>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>Payment Verification - {participant.name}</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div className="text-sm text-muted-foreground">
+                                <p><strong>Email:</strong> {participant.email}</p>
+                                <p><strong>Phone:</strong> {participant.phone}</p>
+                                <p><strong>Registration Date:</strong> {formatDate(participant.created_at)}</p>
+                              </div>
+                              <div className="border rounded-lg p-4 bg-gray-50">
+                                <h4 className="font-semibold mb-2">Payment Screenshot:</h4>
+                                <img
+                                  src={participant.payment_screenshot_url}
+                                  alt="Payment verification"
+                                  className="max-w-full h-auto rounded border"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.nextElementSibling!.style.display = 'block';
+                                  }}
+                                />
+                                <div className="hidden text-center py-8 text-muted-foreground">
+                                  <p>Image could not be loaded</p>
+                                  <p className="text-sm">URL: {participant.payment_screenshot_url}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       ) : (
                         <Badge variant="outline" className="border-orange-300 text-orange-800">
                           Pending
