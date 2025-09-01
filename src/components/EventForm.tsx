@@ -233,7 +233,7 @@ const EventForm = () => {
                       </p>
                     </div>
                     
-                    <div className="flex justify-center mb-4">
+                    <div className="flex justify-center">
                       <div className="bg-white p-4 rounded-lg shadow-lg">
                         <img
                           src={qrCodeImage}
@@ -241,12 +241,6 @@ const EventForm = () => {
                           className="w-48 h-48 object-contain"
                         />
                       </div>
-                    </div>
-                    
-                    <div className="text-center text-sm text-blue-700 space-y-1">
-                      <p><strong>Recipient:</strong> JO*B CH********R J.</p>
-                      <p><strong>Amount:</strong> ₱500.00</p>
-                      <p><strong>Transfer fees may apply</strong></p>
                     </div>
                   </div>
                   
