@@ -260,7 +260,7 @@ const EventForm = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-coffee hover:opacity-90 text-coffee-dark py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full bg-gradient-coffee hover:opacity-90 text-primary-foreground py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? "Submitting..." : "Register for Coffee Tasting Session"}
