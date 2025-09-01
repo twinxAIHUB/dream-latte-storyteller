@@ -1,73 +1,129 @@
-# Welcome to your Lovable project
+# Dream Latte Storyteller
 
-## Project info
+A beautiful coffee shop website built with React, TypeScript, and Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/3792408b-7685-4a45-a6c9-da1e6ea84bdc
+## Features
 
-## How can I edit this code?
+- Modern, responsive design with coffee-themed styling
+- Admin dashboard for managing coffee tasting events
+- Beautiful UI components using shadcn/ui
+- Supabase integration for backend services
+- Client-side routing with React Router
 
-There are several ways of editing your application.
+## Prerequisites
 
-**Use Lovable**
+Before you begin, ensure you have the following installed:
+- Node.js (version 18 or higher)
+- npm, yarn, or bun package manager
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3792408b-7685-4a45-a6c9-da1e6ea84bdc) and start prompting.
+## Installation
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd dream-latte-storyteller
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies:
+```bash
+# Using npm
+npm install
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Using yarn
+yarn install
 
-**Use GitHub Codespaces**
+# Using bun
+bun install
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+3. Set up environment variables:
+Create a `.env` file in the root directory with your Supabase credentials:
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## What technologies are used for this project?
+## Development
 
-This project is built with:
+Start the development server:
+```bash
+npm run dev
+# or
+yarn dev
+# or
+bun dev
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The application will be available at `http://localhost:8080`
 
-## How can I deploy this project?
+## Building for Production
 
-Simply open [Lovable](https://lovable.dev/projects/3792408b-7685-4a45-a6c9-da1e6ea84bdc) and click on Share -> Publish.
+Build the application for production:
+```bash
+npm run build
+# or
+yarn build
+# or
+bun run build
+```
 
-## Can I connect a custom domain to my Lovable project?
+## Deployment
 
-Yes, you can!
+### Netlify Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+This project is configured for easy deployment on Netlify:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+1. **Automatic Deployment**: Connect your repository to Netlify and it will automatically deploy using the `netlify.toml` configuration.
+
+2. **Manual Deployment**: 
+   - Build the project: `npm run build`
+   - Upload the `dist` folder to Netlify
+
+3. **Environment Variables**: Add your Supabase environment variables in the Netlify dashboard:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+
+### Routing
+
+The application uses client-side routing with React Router. The `public/_redirects` file ensures that all routes work correctly on Netlify by redirecting all requests to `index.html`.
+
+## Project Structure
+
+```
+src/
+├── components/          # React components
+│   ├── admin/          # Admin dashboard components
+│   └── ui/             # Reusable UI components
+├── pages/              # Page components
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+├── integrations/       # External service integrations
+└── assets/             # Static assets
+```
+
+## Technologies Used
+
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Routing**: React Router DOM
+- **Backend**: Supabase
+- **State Management**: TanStack Query
+- **Forms**: React Hook Form with Zod validation
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.

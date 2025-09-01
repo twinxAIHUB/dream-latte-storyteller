@@ -61,6 +61,18 @@ export default {
 				'cream': 'hsl(var(--cream))',
 				'warm-cream': 'hsl(var(--warm-cream))',
 				'dark-grey': 'hsl(var(--dark-grey))',
+				brown: {
+					50: '#fdf8f6',
+					100: '#f2e8e5',
+					200: '#eaddd7',
+					300: '#e0cec7',
+					400: '#d2bab0',
+					500: '#bfa094',
+					600: '#a18072',
+					700: '#977669',
+					800: '#846358',
+					900: '#43302b',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

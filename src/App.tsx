@@ -47,6 +47,16 @@ const App = () => {
                 )
               } 
             />
+            <Route 
+              path="/dashboard" 
+              element={
+                isAdminLoggedIn ? (
+                  <AdminDashboard onLogout={handleAdminLogout} />
+                ) : (
+                  <AdminLogin onLogin={handleAdminLogin} />
+                )
+              } 
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
