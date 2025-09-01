@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, Coffee, Calendar, Clock, Users, QrCode } from "lucide-react";
 import qrCodeImage from "@/assets/qr.png";
 import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -20,6 +22,9 @@ const formSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   experience: z.string().min(1, "Please select your coffee experience level"),
   paymentScreenshot: z.instanceof(File).optional(),
+  agreeToTerms: z.literal(true, {
+    errorMap: () => ({ message: "You must agree to the Terms to continue" })
+  }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -28,6 +33,8 @@ const EventForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [termsContent, setTermsContent] = useState<string>("");
+  const [termsTitle, setTermsTitle] = useState<string>("Terms & Agreement");
 
   // Track page visit
   useEffect(() => {
@@ -56,6 +63,7 @@ const EventForm = () => {
       email: "",
       phone: "",
       experience: "",
+      agreeToTerms: false,
     },
   });
 
@@ -143,6 +151,29 @@ const EventForm = () => {
       setIsSubmitting(false);
     }
   };
+
+  // Load latest active terms
+  useEffect(() => {
+    const loadTerms = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('terms_agreements')
+          .select('title, content')
+          .eq('is_active', true)
+          .order('updated_at', { ascending: false })
+          .limit(1);
+
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setTermsTitle(data[0].title || 'Terms & Agreement');
+          setTermsContent(data[0].content || '');
+        }
+      } catch (err) {
+        console.error('Failed to load terms:', err);
+      }
+    };
+    loadTerms();
+  }, []);
 
   return (
     <div 
@@ -354,6 +385,43 @@ const EventForm = () => {
                     )}
                   />
                 </div>
+
+                {/* Terms & Agreement */}
+                <FormField
+                  control={form.control}
+                  name="agreeToTerms"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <div className="flex items-start space-x-3">
+                        <FormControl>
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="font-normal">
+                            I agree to the
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <button type="button" className="ml-1 underline text-coffee hover:text-coffee-dark">
+                                  Terms and Agreement
+                                </button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle>{termsTitle}</DialogTitle>
+                                </DialogHeader>
+                                <div className="prose max-w-none whitespace-pre-wrap text-sm">
+                                  {termsContent || 'No terms available at the moment.'}
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </FormLabel>
+                          <p className="text-xs text-muted-foreground">You must agree before submitting.</p>
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <Button 
                   type="submit" 
