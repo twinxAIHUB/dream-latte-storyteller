@@ -81,6 +81,11 @@ const Footer = () => {
                     Gallery
                   </a>
                 </li>
+                <li>
+                  <a href="/coffee-tasting" className="hover:text-warm-cream transition-colors duration-200">
+                    Coffee Tasting Event
+                  </a>
+                </li>
               </ul>
             </div>
             
