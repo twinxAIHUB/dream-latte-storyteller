@@ -80,10 +80,10 @@ const EventForm = () => {
           const fileExt = data.paymentScreenshot.name.split('.').pop();
           const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
           
-          // Try with a more standard bucket name
+          // Use the correct bucket name from Supabase dashboard
           const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('lovable-uploads')
-            .upload(`payment-screenshots/${fileName}`, data.paymentScreenshot);
+            .from('payment-screenshots')
+            .upload(fileName, data.paymentScreenshot);
           
           if (uploadError) {
             throw new Error(`Upload failed: ${uploadError.message}`);
@@ -91,8 +91,8 @@ const EventForm = () => {
           
           // Get the public URL for the uploaded file
           const { data: urlData } = supabase.storage
-            .from('lovable-uploads')
-            .getPublicUrl(`payment-screenshots/${fileName}`);
+            .from('payment-screenshots')
+            .getPublicUrl(fileName);
           
           paymentScreenshotUrl = urlData.publicUrl;
         } catch (uploadError) {
