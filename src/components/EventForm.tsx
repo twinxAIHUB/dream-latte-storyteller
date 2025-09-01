@@ -75,10 +75,18 @@ const EventForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-coffee-light via-background to-accent/10 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
+    <div 
+      className="min-h-screen relative py-12 px-4"
+      style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(75, 46, 46, 0.8)), url(/lovable-uploads/1700ddfd-610f-4aad-bd19-4fa2fa00b29f.png)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="max-w-2xl mx-auto relative z-10">
         {/* Event Details Header */}
-        <Card className="mb-8 border-coffee/20 bg-gradient-coffee/5">
+        <Card className="mb-8 border-coffee/20 bg-background/95 backdrop-blur-sm shadow-2xl">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
               <Coffee className="w-12 h-12 text-coffee" />
@@ -121,17 +129,18 @@ const EventForm = () => {
                 </div>
               </div>
             </div>
-            <div className="mt-6 p-4 bg-coffee/10 rounded-lg">
-              <p className="text-sm text-center">
+            <div className="mt-6 p-6 bg-gradient-to-r from-coffee/20 to-coffee-light/20 rounded-lg border border-coffee/30">
+              <p className="text-sm text-center font-medium">
                 Experience premium coffees from our curated collection. 
-                50% down payment required to secure your spot.
+                <br />
+                <span className="text-coffee font-semibold">50% down payment required to secure your spot.</span>
               </p>
             </div>
           </CardContent>
         </Card>
 
         {/* Registration Form */}
-        <Card className="border-coffee/20">
+        <Card className="border-coffee/20 bg-background/95 backdrop-blur-sm shadow-2xl">
           <CardHeader>
             <CardTitle className="text-2xl text-coffee">Register Now</CardTitle>
             <CardDescription>
@@ -216,7 +225,7 @@ const EventForm = () => {
                     <FormItem>
                       <FormLabel>Payment Screenshot (50% Down Payment) *</FormLabel>
                       <FormControl>
-                        <div className="border-2 border-dashed border-coffee/30 rounded-lg p-6 text-center hover:border-coffee/50 transition-colors">
+                        <div className="border-2 border-dashed border-coffee/30 rounded-lg p-8 text-center hover:border-coffee/50 transition-all duration-300 hover:bg-coffee/5">
                           <input
                             type="file"
                             accept="image/*"
@@ -251,10 +260,10 @@ const EventForm = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-coffee hover:opacity-90 text-white"
+                  className="w-full bg-gradient-coffee hover:opacity-90 text-white py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Submitting..." : "Register for Event"}
+                  {isSubmitting ? "Submitting..." : "Register for Coffee Tasting Session"}
                 </Button>
               </form>
             </Form>
