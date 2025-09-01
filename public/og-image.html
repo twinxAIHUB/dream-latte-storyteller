@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Latte Cafe OG Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 1200px;
+            height: 630px;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #F5F5DC;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        
+        .coffee-cup {
+            width: 200px;
+            height: 200px;
+            background: #F5F5DC;
+            border: 8px solid #8B4513;
+            border-radius: 0 0 100px 100px;
+            position: relative;
+            margin: 0 auto 40px;
+        }
+        
+        .coffee-cup::before {
+            content: '';
+            position: absolute;
+            right: -30px;
+            top: 30px;
+            width: 60px;
+            height: 120px;
+            border: 8px solid #8B4513;
+            border-left: none;
+            border-radius: 0 60px 60px 0;
+        }
+        
+        .coffee-surface {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 40px;
+            background: #654321;
+            border-radius: 50%;
+        }
+        
+        .steam {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 30px;
+            background: #D2B48C;
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+        
+        .steam:nth-child(2) {
+            left: calc(50% - 15px);
+            height: 25px;
+        }
+        
+        .steam:nth-child(3) {
+            left: calc(50% + 15px);
+            height: 20px;
+        }
+        
+        h1 {
+            font-size: 64px;
+            font-weight: bold;
+            margin: 0 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 28px;
+            color: #D2B48C;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .decorative {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #D2B48C;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        
+        .decorative:nth-child(1) {
+            top: 50px;
+            left: 100px;
+        }
+        
+        .decorative:nth-child(2) {
+            top: 400px;
+            right: 150px;
+        }
+        
+        .decorative:nth-child(3) {
+            bottom: 100px;
+            left: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="coffee-cup">
+            <div class="steam"></div>
+            <div class="steam"></div>
+            <div class="steam"></div>
+            <div class="coffee-surface"></div>
+        </div>
+        <h1>Dream Latte Cafe</h1>
+        <p class="tagline">Crafted with Passion, Brewed with Stories</p>
+        <div class="decorative"></div>
+        <div class="decorative"></div>
+        <div class="decorative"></div>
+    </div>
+</body>
+</html>

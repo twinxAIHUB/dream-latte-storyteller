@@ -1,0 +1,22 @@
+{
+  "name": "Dream Latte Cafe",
+  "short_name": "Dream Latte",
+  "description": "More than a cafe, a place to dream. Specialty coffee, artisan craftsmanship, and community in Sta. Rosa, Pilar, Bataan.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#8B4513",
+  "theme_color": "#654321",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Coffee cup -->
+  <path d="M8 8h12c2.2 0 4 1.8 4 4v2c0 2.2-1.8 4-4 4H8c-2.2 0-4-1.8-4-4v-2c0-2.2 1.8-4 4-4z" fill="#8B4513"/>
+  <!-- Cup handle -->
+  <path d="M20 10c0-1.1.9-2 2-2s2 .9 2 2v6c0 1.1-.9 2-2 2s-2-.9-2-2v-6z" fill="#8B4513"/>
+  <!-- Steam -->
+  <path d="M12 6c0-1.1.9-2 2-2s2 .9 2 2v2c0 1.1-.9 2-2 2s-2-.9-2-2V6z" fill="#D2B48C" opacity="0.7"/>
+  <path d="M16 6c0-1.1.9-2 2-2s2 .9 2 2v2c0 1.1-.9 2-2 2s-2-.9-2-2V6z" fill="#D2B48C" opacity="0.7"/>
+  <!-- Coffee surface -->
+  <ellipse cx="14" cy="12" rx="6" ry="1" fill="#654321"/>
+</svg>
