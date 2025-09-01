@@ -234,11 +234,11 @@ const EventForm = () => {
                     </div>
                     
                     <div className="flex justify-center">
-                      <div className="bg-white p-6 rounded-lg shadow-lg">
+                      <div className="bg-white p-8 rounded-lg shadow-lg">
                         <img
                           src={qrCodeImage}
                           alt="GCash QR Code"
-                          className="w-64 h-64 object-contain"
+                          className="w-96 h-96 md:w-[512px] md:h-[512px] object-contain"
                         />
                       </div>
                     </div>
