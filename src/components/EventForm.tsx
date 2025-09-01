@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Coffee, Calendar, Clock, Users, QrCode } from "lucide-react";
 import qrCodeImage from "@/assets/qr.png";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -30,6 +31,26 @@ const EventForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Track page visit
+  useEffect(() => {
+    const trackVisit = async () => {
+      try {
+        await supabase
+          .from('website_visitors')
+          .insert({
+            page_visited: '/coffee-tasting',
+            session_id: sessionStorage.getItem('sessionId') || `session-${Date.now()}`,
+            user_agent: navigator.userAgent,
+            referrer: document.referrer,
+          });
+      } catch (error) {
+        console.error('Failed to track visit:', error);
+      }
+    };
+    
+    trackVisit();
+  }, []);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -54,8 +75,44 @@ const EventForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      let paymentScreenshotUrl = null;
+      
+      // Upload payment screenshot to Supabase storage if file exists
+      if (data.paymentScreenshot) {
+        const fileExt = data.paymentScreenshot.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `payment-screenshots/${fileName}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('lovable-uploads')
+          .upload(filePath, data.paymentScreenshot);
+        
+        if (uploadError) {
+          throw new Error(`Upload failed: ${uploadError.message}`);
+        }
+        
+        // Get the public URL for the uploaded file
+        const { data: urlData } = supabase.storage
+          .from('lovable-uploads')
+          .getPublicUrl(filePath);
+        
+        paymentScreenshotUrl = urlData.publicUrl;
+      }
+      
+      // Insert registration data into Supabase
+      const { data: registrationData, error: insertError } = await supabase
+        .from('coffee_tasting_registrations')
+        .insert({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          experience: data.experience,
+          payment_screenshot_url: paymentScreenshotUrl,
+        });
+      
+      if (insertError) {
+        throw new Error(`Registration failed: ${insertError.message}`);
+      }
       
       toast({
         title: "Registration Successful!",
@@ -65,9 +122,10 @@ const EventForm = () => {
       form.reset();
       setPreviewUrl(null);
     } catch (error) {
+      console.error('Registration error:', error);
       toast({
         title: "Registration Failed",
-        description: "Please try again or contact us directly.",
+        description: error instanceof Error ? error.message : "Please try again or contact us directly.",
         variant: "destructive",
       });
     } finally {
