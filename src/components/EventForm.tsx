@@ -19,10 +19,7 @@ const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   experience: z.string().min(1, "Please select your coffee experience level"),
-  paymentScreenshot: z.instanceof(File).refine(
-    (file) => file.size <= 5000000,
-    "File size must be less than 5MB"
-  ),
+  paymentScreenshot: z.instanceof(File).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -79,24 +76,33 @@ const EventForm = () => {
       
       // Upload payment screenshot to Supabase storage if file exists
       if (data.paymentScreenshot) {
-        const fileExt = data.paymentScreenshot.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `payment-screenshots/${fileName}`;
-        
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('lovable-uploads')
-          .upload(filePath, data.paymentScreenshot);
-        
-        if (uploadError) {
-          throw new Error(`Upload failed: ${uploadError.message}`);
+        try {
+          const fileExt = data.paymentScreenshot.name.split('.').pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+          const filePath = fileName; // Store directly in bucket root
+          
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('payment-screenshot')
+            .upload(filePath, data.paymentScreenshot);
+          
+          if (uploadError) {
+            throw new Error(`Upload failed: ${uploadError.message}`);
+          }
+          
+          // Get the public URL for the uploaded file
+          const { data: urlData } = supabase.storage
+            .from('payment-screenshot')
+            .getPublicUrl(filePath);
+          
+          paymentScreenshotUrl = urlData.publicUrl;
+        } catch (uploadError) {
+          console.error('File upload error:', uploadError);
+          toast({
+            title: "File Upload Failed",
+            description: "Registration will continue without file upload.",
+            variant: "destructive",
+          });
         }
-        
-        // Get the public URL for the uploaded file
-        const { data: urlData } = supabase.storage
-          .from('lovable-uploads')
-          .getPublicUrl(filePath);
-        
-        paymentScreenshotUrl = urlData.publicUrl;
       }
       
       // Insert registration data into Supabase
@@ -308,7 +314,7 @@ const EventForm = () => {
                     name="paymentScreenshot"
                     render={() => (
                       <FormItem>
-                        <FormLabel>Upload Payment Screenshot *</FormLabel>
+                        <FormLabel>Upload Payment Screenshot (Optional)</FormLabel>
                         <FormControl>
                           <div className="border-2 border-dashed border-coffee/30 rounded-lg p-8 text-center hover:border-coffee/50 transition-all duration-300 hover:bg-coffee/5">
                             <input
@@ -321,7 +327,7 @@ const EventForm = () => {
                             <label htmlFor="payment-upload" className="cursor-pointer">
                               <Upload className="w-8 h-8 text-coffee mx-auto mb-2" />
                               <p className="text-sm text-muted-foreground mb-1">
-                                Upload your payment screenshot
+                                Upload your payment screenshot (optional)
                               </p>
                               <p className="text-xs text-muted-foreground">
                                 JPG, PNG up to 5MB
