@@ -31,6 +31,7 @@ const CoffeeTastingEditor = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [configId, setConfigId] = useState<string | null>(null);
+  const [isDirty, setIsDirty] = useState(false);
 
   const form = useForm<ConfigData>({
     resolver: zodResolver(configSchema),
@@ -48,6 +49,12 @@ const CoffeeTastingEditor = () => {
       additional_info: "",
     },
   });
+
+  // Watch for form changes
+  const watchedValues = form.watch();
+  useEffect(() => {
+    setIsDirty(form.formState.isDirty);
+  }, [watchedValues, form.formState.isDirty]);
 
   useEffect(() => {
     fetchCurrentConfig();
@@ -121,6 +128,25 @@ const CoffeeTastingEditor = () => {
         console.log('Update result:', { updateData, error });
 
         if (error) throw error;
+        
+        // Update the form with the saved data instead of refetching
+        if (updateData && updateData.length > 0) {
+          const savedData = updateData[0];
+          form.reset({
+            title: savedData.title,
+            description: savedData.description,
+            event_date: savedData.event_date,
+            start_time: savedData.start_time,
+            end_time: savedData.end_time,
+            max_participants: savedData.max_participants,
+            min_participants: savedData.min_participants,
+            price_per_person: Number(savedData.price_per_person),
+            down_payment_percentage: savedData.down_payment_percentage,
+            featured_coffees: savedData.featured_coffees || "",
+            additional_info: savedData.additional_info || "",
+          });
+          console.log('Form updated with saved data:', savedData);
+        }
       } else {
         // Create new config
         console.log('Creating new config');
@@ -138,6 +164,22 @@ const CoffeeTastingEditor = () => {
 
         if (error) throw error;
         setConfigId(newConfig.id);
+        
+        // Update the form with the new data
+        form.reset({
+          title: newConfig.title,
+          description: newConfig.description,
+          event_date: newConfig.event_date,
+          start_time: newConfig.start_time,
+          end_time: newConfig.end_time,
+          max_participants: newConfig.max_participants,
+          min_participants: newConfig.min_participants,
+          price_per_person: Number(newConfig.price_per_person),
+          down_payment_percentage: newConfig.down_payment_percentage,
+          featured_coffees: newConfig.featured_coffees || "",
+          additional_info: newConfig.additional_info || "",
+        });
+        console.log('Form updated with new data:', newConfig);
       }
 
       toast({
@@ -145,8 +187,6 @@ const CoffeeTastingEditor = () => {
         description: "Coffee tasting event configuration has been updated successfully",
       });
       
-      // Refresh the form data
-      await fetchCurrentConfig();
     } catch (error) {
       console.error('Error saving config:', error);
       toast({
@@ -375,7 +415,7 @@ const CoffeeTastingEditor = () => {
               disabled={isLoading}
             >
               <Save className="w-4 h-4 mr-2" />
-              {isLoading ? "Saving..." : "Save Configuration"}
+              {isLoading ? "Saving..." : isDirty ? "Save Changes" : "Configuration Saved"}
             </Button>
           </form>
         </Form>
