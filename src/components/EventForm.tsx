@@ -180,15 +180,38 @@ const EventForm = () => {
   useEffect(() => {
     const loadEventConfig = async () => {
       try {
-        const { data, error } = await supabase
+        console.log('Loading event config from database...');
+        
+        // First try to get the active config
+        let { data, error } = await supabase
           .from('coffee_tasting_config')
           .select('*')
           .eq('is_active', true)
           .maybeSingle();
 
+        console.log('Active config result:', { data, error });
+
+        // If no active config, get the most recent one
+        if (!data && !error) {
+          console.log('No active config found, getting most recent...');
+          const { data: recentData, error: recentError } = await supabase
+            .from('coffee_tasting_config')
+            .select('*')
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          
+          data = recentData;
+          error = recentError;
+          console.log('Recent config result:', { data, error });
+        }
+
         if (error) throw error;
         if (data) {
+          console.log('Setting event config:', data);
           setEventConfig(data);
+        } else {
+          console.log('No event config found in database');
         }
       } catch (err) {
         console.error('Failed to load event config:', err);

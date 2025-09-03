@@ -112,6 +112,18 @@ const CoffeeTastingEditor = () => {
     try {
       console.log('Submitting config data:', data);
       
+      // First, deactivate all existing configs
+      console.log('Deactivating all existing configs...');
+      const { error: deactivateError } = await supabase
+        .from('coffee_tasting_config')
+        .update({ is_active: false })
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Update all records
+
+      if (deactivateError) {
+        console.error('Error deactivating configs:', deactivateError);
+        throw deactivateError;
+      }
+      
       if (configId) {
         // Update existing config
         console.log('Updating existing config with ID:', configId);
