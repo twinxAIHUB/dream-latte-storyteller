@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Save, Coffee } from "lucide-react";
+import { Save, Coffee, RefreshCw } from "lucide-react";
 
 const configSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -55,11 +55,17 @@ const CoffeeTastingEditor = () => {
 
   const fetchCurrentConfig = async () => {
     try {
+      console.log('Fetching current config...');
+      
+      // First try to get the most recent config (active or not)
       const { data, error } = await supabase
         .from('coffee_tasting_config')
         .select('*')
-        .eq('is_active', true)
+        .order('updated_at', { ascending: false })
+        .limit(1)
         .maybeSingle();
+
+      console.log('Fetch result:', { data, error });
 
       if (error) throw error;
 
@@ -78,6 +84,10 @@ const CoffeeTastingEditor = () => {
           featured_coffees: data.featured_coffees || "",
           additional_info: data.additional_info || "",
         });
+        
+        console.log('Form reset with data:', data);
+      } else {
+        console.log('No existing config found, will create new one');
       }
     } catch (error) {
       console.error('Error fetching config:', error);
@@ -93,24 +103,38 @@ const CoffeeTastingEditor = () => {
     setIsLoading(true);
     
     try {
+      console.log('Submitting config data:', data);
+      
       if (configId) {
         // Update existing config
-        const { error } = await supabase
+        console.log('Updating existing config with ID:', configId);
+        const { data: updateData, error } = await supabase
           .from('coffee_tasting_config')
           .update({
             ...data,
+            is_active: true,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', configId);
+          .eq('id', configId)
+          .select();
+
+        console.log('Update result:', { updateData, error });
 
         if (error) throw error;
       } else {
         // Create new config
+        console.log('Creating new config');
         const { data: newConfig, error } = await supabase
           .from('coffee_tasting_config')
-          .insert([data])
+          .insert([{
+            ...data,
+            is_active: true,
+            updated_at: new Date().toISOString(),
+          }])
           .select()
           .single();
+
+        console.log('Create result:', { newConfig, error });
 
         if (error) throw error;
         setConfigId(newConfig.id);
@@ -120,11 +144,14 @@ const CoffeeTastingEditor = () => {
         title: "Configuration Saved",
         description: "Coffee tasting event configuration has been updated successfully",
       });
+      
+      // Refresh the form data
+      await fetchCurrentConfig();
     } catch (error) {
       console.error('Error saving config:', error);
       toast({
         title: "Save Failed",
-        description: "Failed to save configuration. Please try again.",
+        description: `Failed to save configuration: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
@@ -135,14 +162,25 @@ const CoffeeTastingEditor = () => {
   return (
     <Card className="bg-white/60 backdrop-blur-sm border-coffee/20">
       <CardHeader>
-        <div className="flex items-center space-x-3">
-          <Coffee className="w-6 h-6 text-coffee-brown" />
-          <div>
-            <CardTitle className="text-coffee-brown">Coffee Tasting Event Editor</CardTitle>
-            <CardDescription>
-              Edit the coffee tasting session details and configuration
-            </CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Coffee className="w-6 h-6 text-coffee-brown" />
+            <div>
+              <CardTitle className="text-coffee-brown">Coffee Tasting Event Editor</CardTitle>
+              <CardDescription>
+                Edit the coffee tasting session details and configuration
+              </CardDescription>
+            </div>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={fetchCurrentConfig}
+            disabled={isLoading}
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
