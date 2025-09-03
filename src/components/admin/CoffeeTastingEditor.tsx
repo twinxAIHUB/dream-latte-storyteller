@@ -112,87 +112,51 @@ const CoffeeTastingEditor = () => {
     try {
       console.log('Submitting config data:', data);
       
-      // First, deactivate all existing configs
-      console.log('Deactivating all existing configs...');
-      const { error: deactivateError } = await supabase
+      // Simple approach: Delete all existing records and insert new one
+      console.log('Deleting all existing configs...');
+      const { error: deleteError } = await supabase
         .from('coffee_tasting_config')
-        .update({ is_active: false })
-        .neq('id', '00000000-0000-0000-0000-000000000000'); // Update all records
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all records
 
-      if (deactivateError) {
-        console.error('Error deactivating configs:', deactivateError);
-        throw deactivateError;
+      if (deleteError) {
+        console.error('Error deleting configs:', deleteError);
+        throw deleteError;
       }
       
-      if (configId) {
-        // Update existing config
-        console.log('Updating existing config with ID:', configId);
-        const { data: updateData, error } = await supabase
-          .from('coffee_tasting_config')
-          .update({
-            ...data,
-            is_active: true,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', configId)
-          .select();
+      console.log('Creating new config...');
+      const { data: newConfig, error } = await supabase
+        .from('coffee_tasting_config')
+        .insert([{
+          ...data,
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        }])
+        .select()
+        .single();
 
-        console.log('Update result:', { updateData, error });
+      console.log('Create result:', { newConfig, error });
 
-        if (error) throw error;
-        
-        // Update the form with the saved data instead of refetching
-        if (updateData && updateData.length > 0) {
-          const savedData = updateData[0];
-          form.reset({
-            title: savedData.title,
-            description: savedData.description,
-            event_date: savedData.event_date,
-            start_time: savedData.start_time,
-            end_time: savedData.end_time,
-            max_participants: savedData.max_participants,
-            min_participants: savedData.min_participants,
-            price_per_person: Number(savedData.price_per_person),
-            down_payment_percentage: savedData.down_payment_percentage,
-            featured_coffees: savedData.featured_coffees || "",
-            additional_info: savedData.additional_info || "",
-          });
-          console.log('Form updated with saved data:', savedData);
-        }
-      } else {
-        // Create new config
-        console.log('Creating new config');
-        const { data: newConfig, error } = await supabase
-          .from('coffee_tasting_config')
-          .insert([{
-            ...data,
-            is_active: true,
-            updated_at: new Date().toISOString(),
-          }])
-          .select()
-          .single();
-
-        console.log('Create result:', { newConfig, error });
-
-        if (error) throw error;
-        setConfigId(newConfig.id);
-        
-        // Update the form with the new data
-        form.reset({
-          title: newConfig.title,
-          description: newConfig.description,
-          event_date: newConfig.event_date,
-          start_time: newConfig.start_time,
-          end_time: newConfig.end_time,
-          max_participants: newConfig.max_participants,
-          min_participants: newConfig.min_participants,
-          price_per_person: Number(newConfig.price_per_person),
-          down_payment_percentage: newConfig.down_payment_percentage,
-          featured_coffees: newConfig.featured_coffees || "",
-          additional_info: newConfig.additional_info || "",
-        });
-        console.log('Form updated with new data:', newConfig);
-      }
+      if (error) throw error;
+      
+      setConfigId(newConfig.id);
+      
+      // Update the form with the new data
+      form.reset({
+        title: newConfig.title,
+        description: newConfig.description,
+        event_date: newConfig.event_date,
+        start_time: newConfig.start_time,
+        end_time: newConfig.end_time,
+        max_participants: newConfig.max_participants,
+        min_participants: newConfig.min_participants,
+        price_per_person: Number(newConfig.price_per_person),
+        down_payment_percentage: newConfig.down_payment_percentage,
+        featured_coffees: newConfig.featured_coffees || "",
+        additional_info: newConfig.additional_info || "",
+      });
+      
+      console.log('Form updated with new data:', newConfig);
 
       toast({
         title: "Configuration Saved",
