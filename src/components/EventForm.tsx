@@ -35,6 +35,7 @@ const EventForm = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [termsContent, setTermsContent] = useState<string>("");
   const [termsTitle, setTermsTitle] = useState<string>("Terms & Agreement");
+  const [eventConfig, setEventConfig] = useState<any>(null);
 
   // Track page visit
   useEffect(() => {
@@ -175,6 +176,27 @@ const EventForm = () => {
     loadTerms();
   }, []);
 
+  // Load event configuration
+  useEffect(() => {
+    const loadEventConfig = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('coffee_tasting_config')
+          .select('*')
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (data) {
+          setEventConfig(data);
+        }
+      } catch (err) {
+        console.error('Failed to load event config:', err);
+      }
+    };
+    loadEventConfig();
+  }, []);
+
   return (
     <div 
       className="min-h-screen relative py-12 px-4"
@@ -193,10 +215,10 @@ const EventForm = () => {
               <Coffee className="w-12 h-12 text-coffee" />
             </div>
             <CardTitle className="text-3xl font-bold text-coffee mb-2">
-              Coffee Tasting Session
+              {eventConfig?.title || "Coffee Tasting Session"}
             </CardTitle>
             <CardDescription className="text-lg text-muted-foreground">
-              Join us for an exclusive coffee tasting experience
+              {eventConfig?.description || "Join us for an exclusive coffee tasting experience"}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -205,36 +227,36 @@ const EventForm = () => {
                 <Calendar className="w-5 h-5 text-coffee" />
                 <div>
                   <p className="font-semibold">Date</p>
-                  <p className="text-muted-foreground">September 2024</p>
+                  <p className="text-muted-foreground">{eventConfig?.event_date || "September 2024"}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Clock className="w-5 h-5 text-coffee" />
                 <div>
                   <p className="font-semibold">Time</p>
-                  <p className="text-muted-foreground">10:00 AM - 12:00 PM</p>
+                  <p className="text-muted-foreground">{eventConfig?.start_time || "10:00 AM"} - {eventConfig?.end_time || "12:00 PM"}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Users className="w-5 h-5 text-coffee" />
                 <div>
                   <p className="font-semibold">Capacity</p>
-                  <p className="text-muted-foreground">4-6 participants max</p>
+                  <p className="text-muted-foreground">{eventConfig?.min_participants || "4"}-{eventConfig?.max_participants || "6"} participants max</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <span className="w-5 h-5 text-coffee text-lg font-bold flex items-center justify-center">₱</span>
                 <div>
                   <p className="font-semibold">Price</p>
-                  <p className="text-muted-foreground">₱1,000 per person</p>
+                  <p className="text-muted-foreground">₱{eventConfig?.price_per_person || "1,000"} per person</p>
                 </div>
               </div>
             </div>
             <div className="mt-6 p-6 bg-gradient-to-r from-coffee/20 to-coffee-light/20 rounded-lg border border-coffee/30">
               <p className="text-sm text-center font-medium">
-                Experience premium coffees from our curated collection. 
+                {eventConfig?.featured_coffees || "Experience premium coffees from our curated collection."}
                 <br />
-                <span className="text-coffee font-semibold">50% down payment required to secure your spot.</span>
+                <span className="text-coffee font-semibold">{eventConfig?.additional_info || "50% down payment required to secure your spot."}</span>
               </p>
             </div>
           </CardContent>
@@ -329,7 +351,7 @@ const EventForm = () => {
                       <QrCode className="w-8 h-8 text-blue-600 mx-auto mb-2" />
                       <h3 className="text-lg font-bold text-blue-800 mb-2">GCash Payment</h3>
                       <p className="text-sm text-blue-700 mb-4">
-                        Scan the QR code below to pay ₱500.00 via GCash
+                        Scan the QR code below to pay ₱{eventConfig ? (eventConfig.price_per_person * eventConfig.down_payment_percentage / 100) : 500}.00 via GCash
                       </p>
                     </div>
                     
