@@ -235,7 +235,7 @@ const EventForm = () => {
                 <Calendar className="w-5 h-5 text-coffee" />
                 <div>
                   <p className="font-semibold">Date</p>
-                  <p className="text-muted-foreground">{eventConfig?.event_date || "September 2024"}</p>
+                  <p className="text-muted-foreground">September 7, 2025</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
