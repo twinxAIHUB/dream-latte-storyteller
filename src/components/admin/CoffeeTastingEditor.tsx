@@ -36,17 +36,17 @@ const CoffeeTastingEditor = () => {
   const form = useForm<ConfigData>({
     resolver: zodResolver(configSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      event_date: "",
-      start_time: "",
-      end_time: "",
+      title: "Coffee Tasting Session",
+      description: "Join us for an exclusive coffee tasting experience",
+      event_date: "September 7, 2025",
+      start_time: "10:00 AM",
+      end_time: "12:00 PM",
       max_participants: 6,
       min_participants: 4,
       price_per_person: 1000,
       down_payment_percentage: 50,
-      featured_coffees: "",
-      additional_info: "",
+      featured_coffees: "Premium coffees from our curated collection",
+      additional_info: "50% down payment required to secure your spot.",
     },
   });
 
